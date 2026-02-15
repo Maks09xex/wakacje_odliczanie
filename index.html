@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wakacje 2025/2026</title>
+
+<style>
+html, body{
+    margin:0;
+    padding:0;
+    height:100%;
+    overflow:hidden;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color:#e6edf3;
+    text-align:center;
+    background: radial-gradient(circle at center, #0f172a 0%, #0a0f1f 40%, #050814 100%);
+}
+
+.container{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    width:100%;
+}
+
+h1{
+    font-weight:500;
+    font-size:32px;
+    margin-bottom:35px;
+}
+
+.counter{
+    font-size:28px;
+    margin:8px 0;
+    font-weight:300;
+}
+
+.small{
+    font-size:14px;
+    opacity:0.6;
+}
+
+.percent{
+    font-size:30px;
+    margin-top:15px;
+}
+
+.date{
+    margin-top:40px;
+    opacity:0.5;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Wakacje i koniec roku szkolnego 2025/2026 za:</h1>
+
+<div class="counter" id="weeks"></div>
+<div class="small">Czyli</div>
+<div class="counter" id="days"></div>
+<div class="small">lub</div>
+<div class="counter" id="hours"></div>
+<div class="small">lub</div>
+<div class="counter" id="minutes"></div>
+<div class="small">lub</div>
+<div class="counter" id="seconds"></div>
+
+<br>
+
+<div class="small">Inaczej mówiąc, roku szkolnego zostało jeszcze:</div>
+<div class="percent" id="percent"></div>
+
+<br>
+
+<div class="small">Bez weekendów do wakacji zostało tylko:</div>
+<div class="counter" id="weekdays"></div>
+
+<div class="date">Koniec roku szkolnego: 26.06.2026</div>
+
+</div>
+
+<script>
+
+const endDate = new Date("June 26, 2026 00:00:00").getTime();
+const schoolStart = new Date("September 1, 2025 00:00:00").getTime();
+
+function countWeekdays(start, end){
+    let count = 0;
+    let current = new Date(start);
+    while(current <= end){
+        const day = current.getDay();
+        if(day !== 0 && day !== 6){
+            count++;
+        }
+        current.setDate(current.getDate() + 1);
+    }
+    return count;
+}
+
+function update(){
+    const now = new Date().getTime();
+    const distance = endDate - now;
+
+    if(distance <= 0){
+        document.body.innerHTML = "<h1 style='margin-top:40vh;'>Już są wakacje 🎉</h1>";
+        return;
+    }
+
+    const seconds = Math.floor(distance / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const weeks = Math.floor(days / 7);
+
+    document.getElementById("weeks").innerText = weeks + " tygodni";
+    document.getElementById("days").innerText = days + " dni";
+    document.getElementById("hours").innerText = hours + " godzin";
+    document.getElementById("minutes").innerText = minutes + " minut";
+    document.getElementById("seconds").innerText = seconds + " sekund";
+
+    const weekdays = countWeekdays(now, endDate);
+    document.getElementById("weekdays").innerText = weekdays + " dni";
+
+    const total = endDate - schoolStart;
+    const left = endDate - now;
+    const percent = (left / total) * 100;
+    document.getElementById("percent").innerText = percent.toFixed(4) + " %";
+}
+
+update();
+setInterval(update, 1000);
+
+</script>
+
+</body>
+</html>
